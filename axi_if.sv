@@ -9,4 +9,13 @@ interface axi_if;
   logic        awready;
   logic [31:0] awaddr;
 
+  // AXI write data channel
+  logic        wvalid;
+  logic        wready;
+  logic [31:0] wdata;
+
+  // AXI write response channel
+  logic        bvalid;
+  logic        bready;
+
 endinterface
