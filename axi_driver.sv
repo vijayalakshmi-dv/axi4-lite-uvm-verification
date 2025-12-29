@@ -15,20 +15,19 @@ class axi_driver extends uvm_driver #(axi_txn);
       `uvm_fatal("DRV", "Virtual interface not set")
   endfunction
 
- task run_phase(uvm_phase phase);
+task run_phase(uvm_phase phase);
   axi_txn tr;
+
+  // wait for reset deassertion
+  wait (vif.reset_n == 1);
 
   forever begin
     seq_item_port.get_next_item(tr);
 
-    // wait for clock edge
     @(posedge vif.clk);
-
-    // drive one signal
     vif.awvalid <= tr.write;
 
     seq_item_port.item_done();
   end
 endtask
-
 endclass
