@@ -25,8 +25,13 @@ task run_phase(uvm_phase phase);
     seq_item_port.get_next_item(tr);
 
     @(posedge vif.clk);
+    // write address phase
     vif.awvalid <= tr.write;
-    vif.awaddr  <= tr.addr;   // NEW: drive address
+    vif.awaddr  <= tr.addr;
+
+    // write data phase
+    vif.wvalid  <= tr.write;
+    vif.wdata   <= tr.data;
 
     seq_item_port.item_done();
   end
