@@ -24,17 +24,34 @@ task run_phase(uvm_phase phase);
   forever begin
     seq_item_port.get_next_item(tr);
 
+    // --------------------
+    // WRITE ADDRESS PHASE
+    // --------------------
     @(posedge vif.clk);
-    // write address phase
     vif.awvalid <= tr.write;
     vif.awaddr  <= tr.addr;
 
-    // write data phase
-    vif.wvalid  <= tr.write;
-    vif.wdata   <= tr.data;
+    // wait for slave ready
+    wait (vif.awready == 1);
+
+    // --------------------
+    // WRITE DATA PHASE
+    // --------------------
+    @(posedge vif.clk);
+    vif.wvalid <= tr.write;
+    vif.wdata  <= tr.data;
+
+    // wait for slave ready
+    wait (vif.wready == 1);
+
+    // deassert valids
+    @(posedge vif.clk);
+    vif.awvalid <= 0;
+    vif.wvalid  <= 0;
 
     seq_item_port.item_done();
   end
 endtask
+
 
 endclass
