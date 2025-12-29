@@ -26,8 +26,10 @@ task run_phase(uvm_phase phase);
 
     @(posedge vif.clk);
     vif.awvalid <= tr.write;
+    vif.awaddr  <= tr.addr;   // NEW: drive address
 
     seq_item_port.item_done();
   end
 endtask
+
 endclass
