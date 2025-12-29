@@ -1,6 +1,7 @@
 class axi_test extends uvm_test;
 
   axi_env env;
+  axi_seq seq;
 
   `uvm_component_utils(axi_test)
 
@@ -13,5 +14,14 @@ class axi_test extends uvm_test;
 
     env = axi_env::type_id::create("env", this);
   endfunction
+
+  task run_phase(uvm_phase phase);
+    phase.raise_objection(this);
+
+    seq = axi_seq::type_id::create("seq");
+    seq.start(env.drv.seq_item_port);
+
+    phase.drop_objection(this);
+  endtask
 
 endclass
