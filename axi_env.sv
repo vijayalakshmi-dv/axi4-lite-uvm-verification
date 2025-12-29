@@ -18,4 +18,11 @@ class axi_env extends uvm_env;
     scb = axi_scoreboard::type_id::create("scb", this);
   endfunction
 
+  function void connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+
+    // connect monitor to scoreboard
+    mon.ap.connect(scb.analysis_export);
+  endfunction
+
 endclass
