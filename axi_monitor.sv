@@ -1,5 +1,8 @@
 class axi_monitor extends uvm_monitor;
 
+  uvm_analysis_port #(axi_txn) ap;
+
+
   // virtual interface handle
   virtual axi_if vif;
 
@@ -7,6 +10,7 @@ class axi_monitor extends uvm_monitor;
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
+    ap = new("ap", this);
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -32,6 +36,10 @@ class axi_monitor extends uvm_monitor;
       tr.addr  = vif.awaddr;
       tr.data  = vif.wdata;
       tr.write = 1'b1;
+
+
+      ap.write(tr);
+
 
       `uvm_info("MON",
         $sformatf("WRITE observed: ADDR=0x%0h DATA=0x%0h",
