@@ -17,16 +17,29 @@ class axi_monitor extends uvm_monitor;
   endfunction
 
   task run_phase(uvm_phase phase);
-    // wait for reset deassertion
-    wait (vif.reset_n == 1);
+  axi_txn tr;
 
-    forever begin
-      @(posedge vif.clk);
+  // wait for reset deassertion
+  wait (vif.reset_n == 1);
 
-      // observe ONE signal
-      if (vif.awvalid)
-        `uvm_info("MON", "AWVALID observed HIGH", UVM_LOW)
+  forever begin
+    @(posedge vif.clk);
+
+    // detect write transaction
+    if (vif.awvalid && vif.wvalid) begin
+      tr = axi_txn::type_id::create("tr", this);
+
+      tr.addr  = vif.awaddr;
+      tr.data  = vif.wdata;
+      tr.write = 1'b1;
+
+      `uvm_info("MON",
+        $sformatf("WRITE observed: ADDR=0x%0h DATA=0x%0h",
+                  tr.addr, tr.data),
+        UVM_LOW)
     end
-  endtask
+  end
+endtask
+
 
 endclass
