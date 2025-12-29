@@ -10,4 +10,12 @@ class axi_env extends uvm_env;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+
+    drv = axi_driver    ::type_id::create("drv", this);
+    mon = axi_monitor   ::type_id::create("mon", this);
+    scb = axi_scoreboard::type_id::create("scb", this);
+  endfunction
+
 endclass
