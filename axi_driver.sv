@@ -31,7 +31,6 @@ task run_phase(uvm_phase phase);
     vif.awvalid <= tr.write;
     vif.awaddr  <= tr.addr;
 
-    // wait for slave ready
     wait (vif.awready == 1);
 
     // --------------------
@@ -41,17 +40,26 @@ task run_phase(uvm_phase phase);
     vif.wvalid <= tr.write;
     vif.wdata  <= tr.data;
 
-    // wait for slave ready
     wait (vif.wready == 1);
 
-    // deassert valids
+    // deassert address & data valids
     @(posedge vif.clk);
     vif.awvalid <= 0;
     vif.wvalid  <= 0;
 
+    // --------------------
+    // WRITE RESPONSE PHASE
+    // --------------------
+    vif.bready <= 1;
+    wait (vif.bvalid == 1);
+
+    @(posedge vif.clk);
+    vif.bready <= 0;
+
     seq_item_port.item_done();
   end
 endtask
+
 
 
 endclass
